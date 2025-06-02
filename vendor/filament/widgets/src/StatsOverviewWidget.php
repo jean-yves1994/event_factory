@@ -2,6 +2,8 @@
 
 namespace Filament\Widgets;
 
+use App\Filament\Widgets\ItemsChart;
+use App\Filament\Widgets\StatsWidgets;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverviewWidget extends Widget
@@ -74,4 +76,5 @@ class StatsOverviewWidget extends Widget
     {
         return $this->getCards();
     }
+
 }

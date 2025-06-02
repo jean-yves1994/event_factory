@@ -2,6 +2,8 @@
 
 namespace Filament\Pages;
 
+use App\Filament\Widgets\ItemsChart;
+use App\Filament\Widgets\StatsWidgets;
 use Filament\Facades\Filament;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Widgets\Widget;
@@ -43,7 +45,10 @@ class Dashboard extends Page
      */
     public function getWidgets(): array
     {
-        return Filament::getWidgets();
+        return [
+            StatsWidgets::class,
+            ItemsChart::class,
+        ];
     }
 
     /**

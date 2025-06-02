@@ -191,4 +191,5 @@ class Role extends Model implements RoleContract
         return $this->loadMissing('permissions')->permissions
             ->contains($permission->getKeyName(), $permission->getKey());
     }
+    
 }

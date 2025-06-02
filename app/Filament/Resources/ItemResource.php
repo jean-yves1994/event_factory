@@ -167,6 +167,7 @@ class ItemResource extends Resource
             'index' => Pages\ListItems::route('/'),
             'create' => Pages\CreateItem::route('/create'),
             'edit' => Pages\EditItem::route('/{record}/edit'),
+            
         ];
     }
     public static function shouldRegisterNavigation(): bool
