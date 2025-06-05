@@ -2,6 +2,7 @@
 
 namespace BezhanSalleh\FilamentShield\Resources;
 
+use App\Models\User;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use BezhanSalleh\FilamentShield\Forms\ShieldSelectAllToggle;
 use BezhanSalleh\FilamentShield\Resources\RoleResource\Pages;
@@ -15,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
@@ -165,7 +167,15 @@ class RoleResource extends Resource implements HasShieldPermissions
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Utils::isResourceNavigationRegistered();
+        $user = Auth::user();
+
+    // Hide the navigation only for storekeeper, show for others
+    if ($user instanceof User && $user->hasRole('storekeeper')) {
+        return false;
+    }
+
+    return Utils::isResourceNavigationRegistered();
+
     }
 
     public static function getNavigationGroup(): ?string

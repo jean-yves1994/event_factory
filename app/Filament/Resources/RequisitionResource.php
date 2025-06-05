@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Auth;
 class RequisitionResource extends Resource
 {
     protected static ?string $model = Requisition::class;
-    protected static ?string $navigationIcon = "heroicon-o-rectangle-stack";
+    protected static ?string $navigationIcon = "heroicon-o-arrow-right-start-on-rectangle";
     protected static ?string $navigationGroup = 'Event Management';
 
 
