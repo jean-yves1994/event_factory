@@ -19,6 +19,8 @@ class ApprovedEventResource extends Resource
 
     protected static ?string $navigationLabel = 'Approved Events';
     protected static ?string $navigationIcon = 'heroicon-o-check-badge';
+    protected static ?string $navigationGroup = 'Stock Management';
+
 
     // Add this method to eager load relationships
     public static function getEloquentQuery(): Builder
