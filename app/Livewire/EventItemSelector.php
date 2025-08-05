@@ -73,12 +73,18 @@ private function validateQuantity(): void
     }
 
     public function updatedSelectedSubcategory($value): void
-    {
-        $this->groups = Group::where('subcategory_id', $value)->pluck('name', 'id')->toArray();
-        $this->selectedGroup = null;
-        $this->items = [];
-        $this->selectedItem = null;
-    }
+{
+    $this->groups = Group::where('subcategory_id', $value)->pluck('name', 'id')->toArray();
+    $this->selectedGroup = null;
+    $this->selectedItem = null;
+
+    // Load items without group within the selected subcategory
+    $this->items = Item::whereNull('group_id')
+        ->where('subcategory_id', $value)
+        ->pluck('name', 'id')
+        ->map(fn ($name) => $name . ' (Ungrouped)')
+        ->toArray();
+}
 
     public function updatedSelectedGroup($value): void
     {
