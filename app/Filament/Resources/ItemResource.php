@@ -20,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Filters\SelectFilter;
 
 class ItemResource extends Resource
 {
@@ -118,45 +119,77 @@ class ItemResource extends Resource
         ]);
     }
 
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('id')->sortable()->searchable(),
-                TextColumn::make('name')->sortable()->searchable(),
-                TextColumn::make('category.name')->label('Category')->sortable()->searchable(),
-                TextColumn::make('subcategory.name')->label('Subcategory')->sortable()->searchable(),
-                TextColumn::make('model')->sortable()->searchable(),
-                TextColumn::make('serial_number')->sortable()->searchable(),
-                TextColumn::make('unit')->sortable()->searchable(),
-                TextColumn::make('quantity')->sortable()->searchable(),
-                TextColumn::make('status')
-                    ->badge()
-                    ->sortable()
-                    ->searchable()
-                    ->colors([
-                        'success' => 'available',
-                        'danger' => fn ($state): bool => $state !== 'available',
-                    ]),
-                TextColumn::make('flight_case')->sortable()->searchable(),
-                ImageColumn::make('image')
-                    ->disk('public')
-                    ->label('Image')
-                    ->size(50)
-                    ->circular()
-                    ->visibility('public'),
-            ])
-            ->defaultSort('id', 'desc')
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+
+public static function table(Table $table): Table
+{
+    return $table
+        ->columns([
+            TextColumn::make('id')->sortable()->searchable(),
+            TextColumn::make('name')->sortable()->searchable(),
+            TextColumn::make('category.name')->label('Category')->sortable()->searchable(),
+            TextColumn::make('subcategory.name')->label('Subcategory')->sortable()->searchable(),
+            TextColumn::make('model')->sortable()->searchable(),
+            TextColumn::make('serial_number')->sortable()->searchable(),
+            TextColumn::make('unit')->sortable()->searchable(),
+            TextColumn::make('quantity')->sortable()->searchable(),
+            TextColumn::make('status')
+                ->badge()
+                ->sortable()
+                ->searchable()
+                ->colors([
+                    'success' => 'available',
+                    'danger' => fn ($state): bool => $state !== 'available',
                 ]),
-            ]);
-    }
+            TextColumn::make('flight_case')->sortable()->searchable(),
+            ImageColumn::make('image')
+                ->disk('public')
+                ->label('Image')
+                ->size(50)
+                ->circular()
+                ->visibility('public'),
+        ])
+        ->filters([
+            SelectFilter::make('category_id')
+                ->label('Category')
+                ->relationship('category', 'name')
+                ->searchable()
+                ->preload(),
+
+            SelectFilter::make('subcategory_id')
+                ->label('Subcategory')
+                ->options(function () {
+                    $categoryId = request()->input('tableFilters.category_id');
+
+                    return Subcategory::when($categoryId, fn ($query) => 
+                        $query->where('category_id', $categoryId)
+                    )->pluck('name', 'id')->toArray();
+                })
+                ->searchable()
+                ->preload(),
+
+            SelectFilter::make('group_id')
+                ->label('Group')
+                ->options(function () {
+                    $subcategoryId = request()->input('tableFilters.subcategory_id');
+
+                    return Group::when($subcategoryId, fn ($query) => 
+                        $query->where('subcategory_id', $subcategoryId)
+                    )->pluck('name', 'id')->toArray();
+                })
+                ->searchable()
+                ->preload(),
+        ])
+        ->defaultSort('id', 'desc')
+        ->actions([
+            Tables\Actions\EditAction::make(),
+            Tables\Actions\DeleteAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ]);
+}
 
     public static function getRelations(): array
     {

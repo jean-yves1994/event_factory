@@ -19,6 +19,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RequisitionApprovedMail;
 
 class RequisitionResource extends Resource
 {
@@ -122,7 +125,14 @@ class RequisitionResource extends Resource
                              'action_date' => now(),
                          ]);
                      }
-                 
+                     // Queue email to storekeepers
+                        $storekeepers = User::role('storekeeper')->get();
+
+                        foreach ($storekeepers as $storekeeper) {
+                            Mail::to($storekeeper->email)->queue(new RequisitionApprovedMail($record));
+                        }
+                    
+                        // Notify the user                 
                      Notification::make()
                          ->title('Requisition approved and stock movements created.')
                          ->success()
