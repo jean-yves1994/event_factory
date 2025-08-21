@@ -75,7 +75,7 @@
                 ✅ Requisition Approved
             </div>
             <div class="content">
-                <p>Hello Storekeeper,</p>
+                <p>Hello,</p>
                 <p>The requisition for the event <strong>{{ $requisition->event->event_name }}</strong> has been approved. Please prepare the items listed below for pickup:</p>
                 <ul class="details">
                     <li><strong>Event Name:</strong> {{ $requisition->event->event_name }}</li>
