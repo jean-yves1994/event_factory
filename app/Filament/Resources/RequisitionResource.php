@@ -126,7 +126,7 @@ class RequisitionResource extends Resource
                          ]);
                      }
                      // Queue email to storekeepers
-                        $storekeepers = User::role('storekeeper')->get();
+                        $storekeepers = User::role('storekeeper','operator')->get();
 
                         foreach ($storekeepers as $storekeeper) {
                             Mail::to($storekeeper->email)->queue(new RequisitionApprovedMail($record));
